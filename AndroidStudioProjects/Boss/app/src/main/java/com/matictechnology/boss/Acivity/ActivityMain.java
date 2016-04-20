@@ -70,6 +70,7 @@ public class ActivityMain extends AppCompatActivity
                     {
                             Manifest.permission.READ_CONTACTS},
                             MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+
         }
         else
         {
