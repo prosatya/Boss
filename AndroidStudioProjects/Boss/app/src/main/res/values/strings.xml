@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Boss</string>
+
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_activity_main">ActivityMain</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="facebook_app_id">668042990000730</string>
+
+    <string name="google_api_key">AIzaSyB4Ht9xfDQeRyyqpVT5XHSpJxKAzGVf9q8</string>
+    <string name="google_app_id">653760494168</string>
+</resources>
