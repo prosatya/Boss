@@ -1,13 +1,20 @@
 package com.matictechnology.boss.Acivity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.facebook.AccessToken;
+import com.facebook.FacebookSdk;
 import com.matictechnology.boss.R;
 
 
@@ -25,11 +32,15 @@ public class ActivitySplashScreen extends Activity
 
 
 
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
 
         super.onCreate(savedInstanceState);
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
+
         setContentView(R.layout.activity_splash_screen);
         overridePendingTransition(R.anim.push_up_in, R.anim.push_up_out);
 
@@ -37,6 +48,8 @@ public class ActivitySplashScreen extends Activity
 
         StartAnimations();
     }
+
+
 
     private void StartAnimations()
     {
@@ -66,10 +79,21 @@ public class ActivitySplashScreen extends Activity
                         sleep(100);
                         waited += 100;
                     }
-                    Intent intent = new Intent(ActivitySplashScreen.this,ActivityLogin.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(intent);
-                    ActivitySplashScreen.this.finish();
+                    if(isLoggedIn())
+                    {
+                        Intent intent = new Intent(ActivitySplashScreen.this,ActivityMain.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(intent);
+                        ActivitySplashScreen.this.finish();
+                    }
+                    else
+                    {
+                        Intent intent = new Intent(ActivitySplashScreen.this,ActivityLogin.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(intent);
+                        ActivitySplashScreen.this.finish();
+                    }
+
                 } catch (InterruptedException e) {
                     // do nothing
                 } finally {
@@ -81,6 +105,11 @@ public class ActivitySplashScreen extends Activity
         splashTread.start();
 
     }
+    public boolean isLoggedIn()
+    {
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        return accessToken != null;
+    }
 
     @Override
     protected void onStart()
@@ -88,4 +117,6 @@ public class ActivitySplashScreen extends Activity
         super.onStart();
 
     }
+
+
 }

@@ -2,11 +2,13 @@ package com.matictechnology.boss.Acivity;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Spinner;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -32,14 +35,13 @@ import com.matictechnology.boss.R;
 
 import java.util.ArrayList;
 
-public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallback ,GoogleApiClient.ConnectionCallbacks,
+public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         GoogleMap.OnInfoWindowClickListener,
         GoogleMap.OnMapLongClickListener,
         GoogleMap.OnMapClickListener,
         GoogleMap.OnMarkerClickListener,
-        LocationListener
-{
+        LocationListener {
 
     LocationListener ltis = this;
     private GoogleMap mMap;
@@ -54,25 +56,24 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
             GoogleMap.MAP_TYPE_NONE};
     private int curMapTypeIndex = 0;
     Spinner list;
+    int map_flag = -1;
     ArrayList<String> alist;
     //ArrayList<Double> friendlistlat,friendlistlong;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-
 
 
         //friendlistlat=new ArrayList<>();
         //friendlistlong=new ArrayList<>();
 
 
-        mGoogleApiClient = new GoogleApiClient.Builder( ActivityMaps.this )
-                .addConnectionCallbacks( this )
-                .addOnConnectionFailedListener( this )
-                .addApi( LocationServices.API )
+        mGoogleApiClient = new GoogleApiClient.Builder(ActivityMaps.this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
                 .build();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -85,40 +86,41 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    public void onStart()
-    {
+    public void onStart() {
         super.onStart();
+        Intent in = getIntent();
+        String res = in.getStringExtra("flag");//in.putExtra("flag","my_location");
+        if (res.equals("my_location"))
+            map_flag = 1;
+        if (res.equals("friend_location"))
+            map_flag = 2;
+        if (res.equals("nearby"))
+            map_flag = 3;
         mGoogleApiClient.connect();
     }
 
     @Override
-    public void onStop()
-    {
+    public void onStop() {
         super.onStop();
-        if (mGoogleApiClient != null && mGoogleApiClient.isConnected())
-        {
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.activity_main, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.satellite)
-        {
-            if (ActivityCompat.checkSelfPermission(ActivityMaps.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ActivityMaps.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-            {
+        if (id == R.id.satellite) {
+            if (ActivityCompat.checkSelfPermission(ActivityMaps.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ActivityMaps.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(ActivityMaps.this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
@@ -127,10 +129,8 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
             initCamera(mCurrentLocation, 0);
             //handling menu options and opening the contact us page
         }
-        if (id == R.id.normal)
-        {
-            if (ActivityCompat.checkSelfPermission(ActivityMaps.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ActivityMaps.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-            {
+        if (id == R.id.normal) {
+            if (ActivityCompat.checkSelfPermission(ActivityMaps.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ActivityMaps.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(ActivityMaps.this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
@@ -139,10 +139,8 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
             initCamera(mCurrentLocation, 1);
             //handling menu options and opening the contact us page
         }
-        if (id == R.id.hybrid)
-        {
-            if (ActivityCompat.checkSelfPermission(ActivityMaps.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ActivityMaps.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-            {
+        if (id == R.id.hybrid) {
+            if (ActivityCompat.checkSelfPermission(ActivityMaps.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ActivityMaps.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(ActivityMaps.this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
@@ -151,20 +149,16 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
             initCamera(mCurrentLocation, 2);
             //handling menu options and opening the contact us page
         }
-        if (id == R.id.terrain)
-        {
-            if (ActivityCompat.checkSelfPermission(ActivityMaps.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ActivityMaps.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-            {
-                ActivityCompat.requestPermissions(ActivityMaps.this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        if (id == R.id.terrain) {
+            if (ActivityCompat.checkSelfPermission(ActivityMaps.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ActivityMaps.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(ActivityMaps.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
             }
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             initCamera(mCurrentLocation, 3);
             //handling menu options and opening the contact us page
         }
-        if (id == R.id.none)
-        {
-            if (ActivityCompat.checkSelfPermission(ActivityMaps.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ActivityMaps.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-            {
+        if (id == R.id.none) {
+            if (ActivityCompat.checkSelfPermission(ActivityMaps.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ActivityMaps.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(ActivityMaps.this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
@@ -176,8 +170,7 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
         return super.onOptionsItemSelected(item);
     }
 
-    private void initCamera(Location location,int curMapTypeIndex1)
-    {
+    private void initCamera(Location location, int curMapTypeIndex1) {
         if (location != null)
         {
             Log.e("TAG", "GPS is on");
@@ -189,53 +182,207 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
                     .tilt(0.0f)
                     .build();
 
-            LatLng myloc=new LatLng(location.getLatitude(),location.getLongitude());
-            mMap.addMarker(new MarkerOptions().position(myloc).title("this is me!")).setIcon(BitmapDescriptorFactory
-                    .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-            mMap.animateCamera(CameraUpdateFactory
-                    .newCameraPosition(position), null);
+            if (map_flag == 1) {
+                LatLng myloc = new LatLng(location.getLatitude(), location.getLongitude());
+                mMap.addMarker(new MarkerOptions().position(myloc).title("this is me!")).setIcon(BitmapDescriptorFactory
+                        .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                mMap.animateCamera(CameraUpdateFactory
+                        .newCameraPosition(position), null);
 
-            mMap.setMapType(MAP_TYPES[curMapTypeIndex1]);
-            mMap.setTrafficEnabled(true);
-            mMap.setMyLocationEnabled(true);
-            mMap.getUiSettings().setZoomControlsEnabled(true);
-        }
-        else
+                mMap.setMapType(MAP_TYPES[curMapTypeIndex1]);
+                mMap.setTrafficEnabled(true);
+                mMap.setMyLocationEnabled(true);
+                mMap.getUiSettings().setZoomControlsEnabled(true);
+
+            } else if (map_flag == 3) {
+                LatLng myloc = new LatLng(location.getLatitude(), location.getLongitude());
+                mMap.addMarker(new MarkerOptions().position(myloc).title("this is me!")).setIcon(BitmapDescriptorFactory
+                        .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                myloc = new LatLng(location.getLatitude() - 0.004, location.getLongitude());
+                mMap.addMarker(new MarkerOptions().position(myloc).title("Friend 1!")).setIcon(BitmapDescriptorFactory
+                        .defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                myloc = new LatLng(location.getLatitude() - 0.004, location.getLongitude() - 0.004);
+                mMap.addMarker(new MarkerOptions().position(myloc).title("Friend 2!")).setIcon(BitmapDescriptorFactory
+                        .defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                myloc = new LatLng(location.getLatitude(), location.getLongitude() - 0.004);
+                mMap.addMarker(new MarkerOptions().position(myloc).title("Friend 3!")).setIcon(BitmapDescriptorFactory
+                        .defaultMarker(BitmapDescriptorFactory.HUE_RED));
+
+                mMap.animateCamera(CameraUpdateFactory
+                        .newCameraPosition(position), null);
+
+                mMap.setMapType(MAP_TYPES[curMapTypeIndex1]);
+                mMap.setTrafficEnabled(true);
+                mMap.setMyLocationEnabled(true);
+                mMap.getUiSettings().setZoomControlsEnabled(true);
+            } else if (map_flag == 2) {
+                LatLng myloc = new LatLng(location.getLatitude(), location.getLongitude());
+                mMap.addMarker(new MarkerOptions().position(myloc).title("friend 1!")).setIcon(BitmapDescriptorFactory
+                        .defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                mMap.animateCamera(CameraUpdateFactory
+                        .newCameraPosition(position), null);
+
+                mMap.setMapType(MAP_TYPES[curMapTypeIndex1]);
+                mMap.setTrafficEnabled(true);
+                mMap.setMyLocationEnabled(true);
+                mMap.getUiSettings().setZoomControlsEnabled(true);
+            }
+
+        } else
         {
             //This is what you need:
-            LocationManager locationManager = (LocationManager) ActivityMaps.this.getSystemService(Context.LOCATION_SERVICE);
-            Criteria criteria = new Criteria();
-            String bestProvider = String.valueOf(locationManager.getBestProvider(criteria, true)).toString();
+
             if (ActivityCompat.checkSelfPermission(ActivityMaps.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ActivityMaps.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             {
                 ActivityCompat.requestPermissions(ActivityMaps.this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+                curMapTypeIndex = curMapTypeIndex1;
             }
-            locationManager.requestLocationUpdates(bestProvider, 1000, 0, ltis);
-            if (locationManager== null) return;
-            String provider = locationManager.getBestProvider(criteria, true);
-            CameraPosition position = CameraPosition.builder()
-                    .target(new LatLng(locationManager.getLastKnownLocation(provider).getLatitude(),
-                            locationManager.getLastKnownLocation(provider).getLongitude()))
-                    .zoom(16f)
-                    .bearing(0.0f)
-                    .tilt(0.0f)
-                    .build();
+            else
+            {
+
+                CameraPosition position = CameraPosition.builder()
+                        .target(new LatLng(location.getLatitude(),
+                                location.getLongitude()))
+                        .zoom(16f)
+                        .bearing(0.0f)
+                        .tilt(0.0f)
+                        .build();
+
+                if (map_flag == 1)
+                {
+                    LatLng myloc = new LatLng(location.getLatitude(), location.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(myloc).title("this is me!")).setIcon(BitmapDescriptorFactory
+                            .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                    mMap.animateCamera(CameraUpdateFactory
+                            .newCameraPosition(position), null);
+
+                    mMap.setMapType(MAP_TYPES[curMapTypeIndex1]);
+                    mMap.setTrafficEnabled(true);
+                    mMap.setMyLocationEnabled(true);
+                    mMap.getUiSettings().setZoomControlsEnabled(true);
+
+                }
+                else if (map_flag == 3)
+                {
+                    LatLng myloc = new LatLng(location.getLatitude(), location.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(myloc).title("this is me!")).setIcon(BitmapDescriptorFactory
+                            .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                    myloc = new LatLng(location.getLatitude() - 0.004, location.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(myloc).title("Friend 1!")).setIcon(BitmapDescriptorFactory
+                            .defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                    myloc = new LatLng(location.getLatitude() - 0.004, location.getLongitude() - 0.004);
+                    mMap.addMarker(new MarkerOptions().position(myloc).title("Friend 2!")).setIcon(BitmapDescriptorFactory
+                            .defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                    myloc = new LatLng(location.getLatitude(), location.getLongitude() - 0.004);
+                    mMap.addMarker(new MarkerOptions().position(myloc).title("Friend 3!")).setIcon(BitmapDescriptorFactory
+                            .defaultMarker(BitmapDescriptorFactory.HUE_RED));
+
+                    mMap.animateCamera(CameraUpdateFactory
+                            .newCameraPosition(position), null);
+
+                    mMap.setMapType(MAP_TYPES[curMapTypeIndex1]);
+                    mMap.setTrafficEnabled(true);
+                    mMap.setMyLocationEnabled(true);
+                    mMap.getUiSettings().setZoomControlsEnabled(true);
+                }
+                else if (map_flag == 2)
+                {
+                    LatLng myloc = new LatLng(location.getLatitude(), location.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(myloc).title("friend 1!")).setIcon(BitmapDescriptorFactory
+                            .defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                    mMap.animateCamera(CameraUpdateFactory
+                            .newCameraPosition(position), null);
+
+                    mMap.setMapType(MAP_TYPES[curMapTypeIndex1]);
+                    mMap.setTrafficEnabled(true);
+                    mMap.setMyLocationEnabled(true);
+                    mMap.getUiSettings().setZoomControlsEnabled(true);
+                }
+            }
+
+        }
+
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+        CameraPosition position = CameraPosition.builder()
+                .target(new LatLng(mCurrentLocation.getLatitude(),
+                        mCurrentLocation.getLongitude()))
+                .zoom(16f)
+                .bearing(0.0f)
+                .tilt(0.0f)
+                .build();
+
+        if(map_flag==1)
+        {
+            LatLng myloc = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+            mMap.addMarker(new MarkerOptions().position(myloc).title("this is me!")).setIcon(BitmapDescriptorFactory
+                    .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+            mMap.animateCamera(CameraUpdateFactory
+                    .newCameraPosition(position), null);
+
+            mMap.setMapType(MAP_TYPES[curMapTypeIndex]);
+            mMap.setTrafficEnabled(true);
+            mMap.setMyLocationEnabled(true);
+            mMap.getUiSettings().setZoomControlsEnabled(true);
+
+        }
+        else if(map_flag==3)
+        {
+            LatLng myloc = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+            mMap.addMarker(new MarkerOptions().position(myloc).title("this is me!")).setIcon(BitmapDescriptorFactory
+                    .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+            myloc = new LatLng(mCurrentLocation.getLatitude()-0.004, mCurrentLocation.getLongitude());
+            mMap.addMarker(new MarkerOptions().position(myloc).title("Friend 1!")).setIcon(BitmapDescriptorFactory
+                    .defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            myloc = new LatLng(mCurrentLocation.getLatitude()-0.004, mCurrentLocation.getLongitude()-0.004);
+            mMap.addMarker(new MarkerOptions().position(myloc).title("Friend 2!")).setIcon(BitmapDescriptorFactory
+                    .defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            myloc = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()-0.004);
+            mMap.addMarker(new MarkerOptions().position(myloc).title("Friend 3!")).setIcon(BitmapDescriptorFactory
+                    .defaultMarker(BitmapDescriptorFactory.HUE_RED));
 
             mMap.animateCamera(CameraUpdateFactory
                     .newCameraPosition(position), null);
 
-            mMap.setMapType(MAP_TYPES[curMapTypeIndex1]);
+            mMap.setMapType(MAP_TYPES[curMapTypeIndex]);
+            mMap.setTrafficEnabled(true);
+            mMap.setMyLocationEnabled(true);
+            mMap.getUiSettings().setZoomControlsEnabled(true);
+        }
+        else if(map_flag==2)
+        {
+            LatLng myloc = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+            mMap.addMarker(new MarkerOptions().position(myloc).title("friend 1!")).setIcon(BitmapDescriptorFactory
+                    .defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            mMap.animateCamera(CameraUpdateFactory
+                    .newCameraPosition(position), null);
+
+            mMap.setMapType(MAP_TYPES[curMapTypeIndex]);
             mMap.setTrafficEnabled(true);
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setZoomControlsEnabled(true);
         }
 
-
-
     }
-
 
     /**
      * Manipulates the map once available.
@@ -390,4 +537,5 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onMarkerClick(Marker marker) {
         return false;
     }
+
 }

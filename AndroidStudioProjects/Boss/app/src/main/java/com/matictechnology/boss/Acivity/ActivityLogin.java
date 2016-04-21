@@ -1,14 +1,20 @@
 package com.matictechnology.boss.Acivity;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.StrictMode;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -40,6 +46,11 @@ public class ActivityLogin extends AppCompatActivity
     private LoginButton fbloginButton;
     String appLinkUrl, previewImageUrl;
 
+    private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    private static final int MY_PERMISSIONS_REQUEST_ACCESS_LOCATION = 2;
+    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 3;
+    private static final int MY_PERMISSIONS_REQUEST_WRITE_CONTACTS= 4;
+
     //Button fbloginButton;
     private static String APP_ID = "668042990000730";
     private Facebook facebook = new Facebook(APP_ID);
@@ -53,9 +64,12 @@ public class ActivityLogin extends AppCompatActivity
 
         setContentView(R.layout.activity_login);
 
+
+
         fbloginButton=(LoginButton) findViewById(R.id.fblogin_button);
 
         fbloginButton.setReadPermissions(Arrays.asList("public_profile", "email", "user_birthday", "user_friends"));
+        //Log.e("login status",""+fbloginButton.getLoginBehavior());
         callbackManager = CallbackManager.Factory.create();
         if (android.os.Build.VERSION.SDK_INT >19) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
@@ -63,37 +77,13 @@ public class ActivityLogin extends AppCompatActivity
             StrictMode.setThreadPolicy(policy);
         }
 
-        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email", "user_birthday"));
+        //LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email", "user_birthday"));
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>()
                 {
                     @Override
                     public void onSuccess(LoginResult loginResult)
                     {
-                        /*GraphRequest request = GraphRequest.newMeRequest(
-                                loginResult.getAccessToken(),
-                                new GraphRequest.GraphJSONObjectCallback() {
-                                    @Override
-                                    public void onCompleted(JSONObject object, GraphResponse response) {
-                                        Log.e("LoginActivity", response.toString());
-
-                                        // Application code
-                                        try {
-                                            String email = object.getString("email");
-                                            String birthday = object.getString("birthday"); // 01/31/1980 format
-                                            Toast.makeText(ActivityLogin.this, ""+email+","+birthday, Toast.LENGTH_SHORT).show();
-
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-
-                                    }
-                                });
-                        Bundle parameters = new Bundle();
-                        parameters.putString("fields", "id,name,email,gender,birthday");
-                        request.setParameters(parameters);
-                        request.executeAsync();*/
-                        // App code
                         getProfileInformation();
                     }
 
@@ -107,25 +97,66 @@ public class ActivityLogin extends AppCompatActivity
                         // App code
                     }
                 });
+    }
 
-        setContentView(R.layout.activity_login);
 
-        appLinkUrl = "https://l.facebook.com/l.php?u=https%3A%2F%2Ffb.me%2F670500059755023&h=FAQF0TUbF";
-        previewImageUrl = "https://lh3.googleusercontent.com/6mLDecgCtVTKDjVFBd29d9L4aZAkKsiqinqAvUXLWTz4bu6eJ2h4B8wFxB_nRVKrCvqz=h900";
 
-        Uri targetUrl = AppLinks.getTargetUrlFromInboundIntent(this, getIntent());
-        if (targetUrl != null)
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+
+        if (android.os.Build.VERSION.SDK_INT >19)
         {
-            Log.i("Activity", "App Link Target URL: " + targetUrl.toString());
+            if (ActivityCompat.checkSelfPermission(ActivityLogin.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ActivityLogin.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(ActivityLogin.this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ActivityLogin.this, Manifest.permission.WRITE_CONTACTS) != PackageManager.PERMISSION_GRANTED)
+            {
+                ActivityCompat.requestPermissions(ActivityLogin.this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+
+            }
         }
 
-        if (AppInviteDialog.canShow()) {
-            AppInviteContent content = new AppInviteContent.Builder()
-                    .setApplinkUrl(appLinkUrl)
-                    .setPreviewImageUrl(previewImageUrl)
-                    .build();
-            AppInviteDialog.show(this, content);
+        if(isLoggedIn())
+        {
+            Log.e("login status","Logged in");
+            getProfileInformation();
         }
+        else
+            Log.e("login status","Logged out");
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.e("permission",""+requestCode+","+permissions+""+ grantResults.toString());
+        if(requestCode==1)
+        {
+            ActivityCompat.requestPermissions(ActivityLogin.this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_ACCESS_LOCATION);
+        }
+        if(requestCode==2)
+        {
+            ActivityCompat.requestPermissions(ActivityLogin.this,new String[]{Manifest.permission.READ_CONTACTS},
+                    MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+        }
+        if(requestCode==3)
+        {
+            ActivityCompat.requestPermissions(ActivityLogin.this,new String[]{Manifest.permission.WRITE_CONTACTS},
+                    MY_PERMISSIONS_REQUEST_WRITE_CONTACTS);
+        }
+        if (requestCode==4)
+        {
+            Log.e("permissions","done with all permissions");
+        }
+    }
+
+    public boolean isLoggedIn()
+    {
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        return accessToken != null;
     }
 
     public void getProfileInformation()
@@ -154,8 +185,72 @@ public class ActivityLogin extends AppCompatActivity
                                 {
                                     Log.e("special response",""+response);
                                     //Toast.makeText(ActivityLogin.this, ""+response, Toast.LENGTH_SHORT).show();
-                                    Intent in=new Intent(ActivityLogin.this,ActivityMain.class);
-                                    startActivity(in);
+                                    new AlertDialogWrapper.Builder(ActivityLogin.this)
+                                            .setTitle("Invite")
+                                            .setMessage("Invite Facebook Friends to install this Application")
+                                            .setPositiveButton("Invite", new DialogInterface.OnClickListener()
+                                            {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which)
+                                                {
+                                                    appLinkUrl = "https://l.facebook.com/l.php?u=https%3A%2F%2Ffb.me%2F670500059755023&h=FAQF0TUbF";
+                                                    previewImageUrl = "https://lh3.googleusercontent.com/6mLDecgCtVTKDjVFBd29d9L4aZAkKsiqinqAvUXLWTz4bu6eJ2h4B8wFxB_nRVKrCvqz=h900";
+
+                                                    Uri targetUrl = AppLinks.getTargetUrlFromInboundIntent(ActivityLogin.this, getIntent());
+                                                    if (targetUrl != null)
+                                                    {
+                                                        Log.i("Activity", "App Link Target URL: " + targetUrl.toString());
+                                                    }
+
+                                                    if (AppInviteDialog.canShow())
+                                                    {
+                                                        AppInviteContent content = new AppInviteContent.Builder()
+                                                                .setApplinkUrl(appLinkUrl)
+                                                                .setPreviewImageUrl(previewImageUrl)
+                                                                .build();
+                                                        AppInviteDialog appInviteDialog = new AppInviteDialog(ActivityLogin.this);
+                                                        appInviteDialog.registerCallback(callbackManager, new FacebookCallback<AppInviteDialog.Result>()
+                                                        {
+                                                            @Override
+                                                            public void onSuccess(AppInviteDialog.Result result)
+                                                            {
+                                                                Log.e("App invite","on success");
+                                                                Intent in=new Intent(ActivityLogin.this,ActivityMain.class);
+                                                                startActivity(in);
+                                                            }
+
+                                                            @Override
+                                                            public void onCancel()
+                                                            {
+                                                                Log.e("App invite","on cancel");
+                                                                Intent in=new Intent(ActivityLogin.this,ActivityMain.class);
+                                                                startActivity(in);
+                                                            }
+
+                                                            @Override
+                                                            public void onError(FacebookException e)
+                                                            {
+                                                                Log.e("App invite","on Error");
+                                                            }
+                                                        });
+
+                                                        appInviteDialog.show(content);
+                                                        //AppInviteDialog.show(ActivityLogin.this, content);
+
+                                                    }
+                                                    dialog.dismiss();
+                                                }
+                                            })
+                                            .setNegativeButton("Skip", new DialogInterface.OnClickListener()
+                                            {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which)
+                                                {
+                                                    Intent in=new Intent(ActivityLogin.this,ActivityMain.class);
+                                                    startActivity(in);
+                                                    dialog.dismiss();
+                                                }
+                                            }).show();
                                 }
                             }
                     ).executeAsync();
@@ -190,6 +285,12 @@ public class ActivityLogin extends AppCompatActivity
         {
             try
             {
+                DBHelper helper=new DBHelper(ActivityLogin.this);
+                SQLiteDatabase db=helper.getReadableDatabase();
+
+                ArrayList<User> al=helper.fetch_user(db);
+                if(al!=null)
+                    return null;
                 params[0]=convertStandardJSONString(params[0]);
                 Log.e("corrected Json=>",""+params[0]);
                 JSONObject obj=new JSONObject(params[0]);
@@ -223,8 +324,6 @@ public class ActivityLogin extends AppCompatActivity
                     FB_Profile=graph_obj.getString("link");
                     //u.setFB_Profile(graph_obj.getString("link"));
                     //Email , Name , Gender , FB_Profile , Picture_URL , Birthday , FB_ID
-                    DBHelper helper=new DBHelper(ActivityLogin.this);
-                    SQLiteDatabase db=helper.getWritableDatabase();
                     if (Email==null)
                         Email="";
                     if (Name==null)
