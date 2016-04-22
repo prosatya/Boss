@@ -1,19 +1,14 @@
 package com.matictechnology.boss.Utility;
 
-import android.Manifest;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.ContactsContract;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
-
-import com.matictechnology.boss.Acivity.ActivityMain;
 import com.matictechnology.boss.Classes.Contacts;
 import com.matictechnology.boss.Classes.User;
 

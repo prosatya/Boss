@@ -14,4 +14,5 @@
     <string name="google_api_key">AIzaSyB4Ht9xfDQeRyyqpVT5XHSpJxKAzGVf9q8</string>
     <string name="google_app_id">653760494168</string>
     <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_activity_payment">ActivityPayment</string>
 </resources>

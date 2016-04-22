@@ -1,20 +1,16 @@
 package com.matictechnology.boss.Acivity;
 
-import android.Manifest;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
@@ -26,23 +22,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import com.afollestad.materialdialogs.AlertDialogWrapper;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.login.LoginManager;
 import com.matictechnology.boss.Classes.Contacts;
 import com.matictechnology.boss.R;
 import com.matictechnology.boss.Utility.DBHelper;
-
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ActivityMain extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
 {
     ArrayList<Contacts> alist;
-    private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     android.support.v7.widget.CardView home_find_near_by,home_update_my_location,home_find_friend;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,14 +124,15 @@ public class ActivityMain extends AppCompatActivity
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Contacts_Async task=new Contacts_Async();
-        task.execute();
+
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressed()
+    {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
+        if (drawer.isDrawerOpen(GravityCompat.START))
+        {
             drawer.closeDrawer(GravityCompat.START);
         }
         else
@@ -195,7 +186,14 @@ public class ActivityMain extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_settings)
+        {
+            return true;
+        }
+        else if (id == R.id.donate)
+        {
+            Intent in=new Intent(ActivityMain.this,ActivityPayment.class);
+            startActivity(in);
             return true;
         }
 
@@ -227,7 +225,7 @@ public class ActivityMain extends AppCompatActivity
         return true;
     }
 
-
+/*
 
     public class Contacts_Async extends AsyncTask<Void, Void,Void>
     {
@@ -247,7 +245,7 @@ public class ActivityMain extends AppCompatActivity
                     {
                         Log.e(count1+","+count,""+cur.getColumnName(count));
                     }*/
-                    cur.moveToNext();
+                    /*cur.moveToNext();
                 }
             }
             alist=new ArrayList<>();
@@ -313,6 +311,6 @@ public class ActivityMain extends AppCompatActivity
             }
 
         }
-    }
+    }*/
 
 }

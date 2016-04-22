@@ -7,6 +7,11 @@
         android:title="@string/action_settings"
         app:showAsAction="never" />
     <item
+        android:id="@+id/donate"
+        android:orderInCategory="100"
+        android:title="Donate"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/maps_type"
         android:orderInCategory="100"
         android:title="Change Map Type"
