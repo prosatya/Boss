@@ -1,6 +1,5 @@
 package com.matictechnology.calculater;
 
-import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -40,14 +39,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             int n1=Integer.parseInt(num1.getText().toString());
             int n2=Integer.parseInt(num2.getText().toString());
             int result=n1+n2;
-            res.setText(result);
+            res.setText("Result :"+result);
         }
         else if (view.getId()==R.id.sub)
         {
             int n1=Integer.parseInt(num1.getText().toString());
             int n2=Integer.parseInt(num2.getText().toString());
             int result=n1-n2;
-            res.setText(result);
+            res.setText("Result :"+result);
         }
     }
 }

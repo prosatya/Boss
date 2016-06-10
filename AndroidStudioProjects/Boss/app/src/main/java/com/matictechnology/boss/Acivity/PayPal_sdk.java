@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.matictechnology.boss.R;
 import com.paypal.android.MEP.PayPal;
 import com.paypal.android.sdk.payments.PayPalConfiguration;
 import com.paypal.android.sdk.payments.PayPalItem;
@@ -21,11 +23,14 @@ import com.paypal.android.sdk.payments.PayPalService;
 import com.paypal.android.sdk.payments.PaymentActivity;
 import com.paypal.android.sdk.payments.PaymentConfirmation;
 
+import org.json.JSONException;
+
 import java.math.BigDecimal;
 
 
-public class PayPal_sdk extends ActionBarActivity {
-
+public class PayPal_sdk extends ActionBarActivity
+{
+    private static final String TAG = "paymentExample";
     Button button_paywithpaypal;
     EditText editText_friend_name;
     EditText editText_amount;
@@ -95,11 +100,23 @@ public class PayPal_sdk extends ActionBarActivity {
 
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE_PAYMENT) {
-            if (resultCode == Activity.RESULT_OK) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == REQUEST_CODE_PAYMENT)
+        {
+            if (resultCode == Activity.RESULT_OK)
+            {
 
+                PaymentConfirmation confirm =
+                        data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
                 Toast.makeText(getApplicationContext(), "Payment done succesfully ", Toast.LENGTH_LONG).show();
+                try {
+                    Log.i(TAG, confirm.toJSONObject().toString(4));
+                    Log.i(TAG, confirm.getPayment().toJSONObject().toString(4));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
 
             }
 
@@ -118,3 +135,5 @@ public class PayPal_sdk extends ActionBarActivity {
 
 
 }
+//9dYj8vm2Zb8UnUvMO0LaobT3uTFQh4
+//https://api.guidebox.com/production-key

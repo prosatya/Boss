@@ -5,21 +5,18 @@ import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.matictechnology.boss.R;
 import com.paypal.android.MEP.PayPal;
 import com.paypal.android.MEP.PayPalActivity;
 import com.paypal.android.MEP.PayPalAdvancedPayment;
 import com.paypal.android.MEP.PayPalReceiverDetails;
 
 import java.math.BigDecimal;
-import java.util.Iterator;
-import java.util.Set;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -45,21 +42,28 @@ public class MainActivity extends ActionBarActivity {
         Button paypal_button = (Button) findViewById(R.id.paypal_button);
 
         initLibrary();
-        paypal_button.setOnClickListener(new View.OnClickListener() {
+        paypal_button.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
 
                 // pay integration here
 
                 PayPalButtonClick(editText_friend1_id.getText().toString(), editText_friend1_amount.getText().toString(), editText_friend2_id.getText().toString(),
                         editText_friend2_amount.getText().toString());
 
+
+
             }
         });
 
     }
 
-    public void initLibrary() {
+
+
+    public void initLibrary()
+    {
         PayPal pp = PayPal.getInstance();
         if (pp == null) {
 

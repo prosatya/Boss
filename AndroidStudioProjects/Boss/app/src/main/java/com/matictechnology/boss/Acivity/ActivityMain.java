@@ -1,18 +1,13 @@
 package com.matictechnology.boss.Acivity;
 
-import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -37,7 +32,7 @@ public class ActivityMain extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main1);
 
         home_find_near_by=(CardView)findViewById(R.id.home_find_near_by);
         home_update_my_location=(CardView)findViewById(R.id.home_update_my_location);
@@ -80,20 +75,6 @@ public class ActivityMain extends AppCompatActivity
 
         DBHelper helper=new DBHelper(ActivityMain.this);
         SQLiteDatabase db=helper.getWritableDatabase();
-
-        /*if (ActivityCompat.checkSelfPermission(ActivityMain.this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ActivityMain.this, Manifest.permission.WRITE_CONTACTS) != PackageManager.PERMISSION_GRANTED)
-        {
-            ActivityCompat.requestPermissions(ActivityMain.this,new String[]
-                {
-                        Manifest.permission.READ_CONTACTS
-                },MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-
-        }
-        else
-        {
-            Contacts_Async task=new Contacts_Async();
-            task.execute();
-        }*/
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

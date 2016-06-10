@@ -12,6 +12,7 @@
     tools:context="com.matictechnology.boss.Acivity.ActivityPayment"
     tools:showIn="@layout/activity_payment">
 
+
     <Button
         android:text="PayPal"
         android:id="@+id/paypal"
@@ -23,6 +24,49 @@
         android:text="PayU"
         android:id="@+id/payu"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:layout_below="@+id/textResult"
+        android:id="@+id/buyItBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:onClick="onBuyPressed"
+        android:text="Buy a Thing" />
+
+    <Button
+        android:layout_below="@+id/buyItBtn"
+        android:id="@+id/futurePaymentBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:onClick="onFuturePaymentPressed"
+        android:text="Future Payment Consent" />
+
+    <Button
+        android:layout_below="@+id/futurePaymentBtn"
+        android:id="@+id/futurePaymentPurchaseBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:onClick="onFuturePaymentPurchasePressed"
+        android:text="Future Payment Purchase" />
+
+    <Button
+        android:layout_below="@+id/futurePaymentPurchaseBtn"
+        android:id="@+id/profileSharingBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:onClick="onProfileSharingPressed"
+        android:text="Profile Sharing Consent" />
+
+    <TextView
+        android:text="Result:"
+        android:layout_below="@+id/payu"
+        android:id="@+id/textResult"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
 </RelativeLayout>

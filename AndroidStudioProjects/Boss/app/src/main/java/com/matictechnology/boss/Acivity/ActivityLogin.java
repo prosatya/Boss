@@ -41,8 +41,19 @@ import java.util.Arrays;
 
 import bolts.AppLinks;
 
+/*
+* Written By Aditya Gupta on 20-04-2016
+* for the android application project named as Boss
+* */
+
 public class ActivityLogin extends AppCompatActivity
 {
+    //Facebook Button initialized
+
+    /*
+
+    * */
+
     private LoginButton fbloginButton;
     String appLinkUrl, previewImageUrl;
 
@@ -72,6 +83,9 @@ public class ActivityLogin extends AppCompatActivity
         //Log.e("login status",""+fbloginButton.getLoginBehavior());
         callbackManager = CallbackManager.Factory.create();
         if (android.os.Build.VERSION.SDK_INT >19) {
+            /*
+
+             */
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
                     .permitAll().build();
             StrictMode.setThreadPolicy(policy);
@@ -115,7 +129,7 @@ public class ActivityLogin extends AppCompatActivity
                         MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
 
             }
-        }
+        }//java.io.FileNotFoundException: /storage/emulated/0/musicfiles/ringtones/LeanOnRingtone1.mp3: open failed: EACCES (Permission denied)
 
         if(isLoggedIn())
         {
