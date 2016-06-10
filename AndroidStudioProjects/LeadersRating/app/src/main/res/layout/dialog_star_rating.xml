@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:gravity="center"
+        android:id="@+id/lin1"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:src="@drawable/holo_star1"
+            android:clickable="true"
+            android:id="@+id/star1"
+            android:layout_width="30dp"
+            android:layout_height="30dp"/>
+        <ImageView
+            android:src="@drawable/holo_star1"
+            android:clickable="true"
+            android:id="@+id/star2"
+            android:layout_width="30dp"
+            android:layout_height="30dp"/>
+        <ImageView
+            android:src="@drawable/holo_star1"
+            android:clickable="true"
+            android:id="@+id/star3"
+            android:layout_width="30dp"
+            android:layout_height="30dp"/>
+        <ImageView
+            android:src="@drawable/holo_star1"
+            android:clickable="true"
+            android:id="@+id/star4"
+            android:layout_width="30dp"
+            android:layout_height="30dp"/>
+        <ImageView
+            android:src="@drawable/holo_star1"
+            android:clickable="true"
+            android:id="@+id/star5"
+            android:layout_width="30dp"
+            android:layout_height="30dp"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>
